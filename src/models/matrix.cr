@@ -29,20 +29,30 @@ class Matrix
     end
 
     output = (@data.map do |row|
-      "\t" + (row.map do |cell|
+      "   " + (row.map do |cell|
         cell.to_s.ljust(cell_size, ' ')
-      end).join('\t') + "\t"
+      end).join("   ") + "   "
     end).join('\n')
 
-    size = output.split("\n").first.size
+    size = output.split("\n").first.size - 2
 
-    io << "┌ #{' ' * 2} ┐\n" + output + "\n└ ┘"
+    io << "┌#{" " * size}┐\n" + output + "\n" + "└#{" " * size}┘\n"
   end
 
   def data=(data)
     validate(data)
 
     @data = data
+  end
+
+  def ==(other : Matrix)
+    @data.each_with_index do |row, i|
+      row.each_with_index do |cell, j|
+        return false if cell != other.data[i][j]
+      end
+    end
+
+    true
   end
 
   def +(other : Matrix)
@@ -71,16 +81,12 @@ class Matrix
 end
 
 a = Matrix.new([
-  [1, 2, 313],
-  [1, 2, 313],
+  [0],
+  [1],
+  [2],
 ])
 
-b = Matrix.new([
-  [1, 2, 3],
-  [1, 2, 3],
-])
+puts a == Matrix.new([[0], [1], [3]])
 
-puts a + b
-
-puts a ^ :T
-puts a ^ 2
+# puts a ^ :T
+# puts a ^ 2
